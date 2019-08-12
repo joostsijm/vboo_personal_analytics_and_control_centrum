@@ -1,0 +1,21 @@
+[[source]]
+
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+
+[packages]
+requests = "*"
+"psycopg2-binary" = "*"
+Flask = "*"
+Flask-SQLAlchemy = "*"
+Flask-Breadcrumbs = "*"
+Flask-Menu = "*"
+Flask-Login = "*"
+Flask-Migrate = "*"
+APScheduler = "*"
+
+
+[dev-packages]
+

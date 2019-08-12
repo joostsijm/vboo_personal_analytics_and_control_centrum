@@ -1,0 +1,9 @@
+*.pyc
+*.swp
+*.min.js
+*.min.css
+nohup.out
+node_modules/
+vendor/
+__pycache__/
+.venv/
