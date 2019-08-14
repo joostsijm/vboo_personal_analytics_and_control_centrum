@@ -1,0 +1,77 @@
+{% extends "layouts/main.html" %}
+{% block title %}{{ user.name }}{% endblock %}
+{% block head %}
+<link href="{{ url_for('static', filename='vendor/datatables/dataTables.bootstrap4.css') }}" rel="stylesheet">
+{% endblock %}
+{% block content %}
+<div class="card mb-3">
+	<div class="card-header">
+		<i class="fa fa-user"></i> Information
+		{% if current_user.id == user.id %}
+		<div class="dropdown pull-right">
+			<button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Actions</button>
+			<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+				<a href="{{ url_for('user_generate_key', id=user.id) }}" class="dropdown-item">Genereer key</a>
+			</div>
+		</div>
+		{% endif %}
+	</div>
+	<div class="card-body">
+		<div class="row mt-2">
+			<div class="col-4">Name</div>
+			<div class="col-8">{{ user.name }}</div>
+		</div>
+		<div class="row mt-2">
+			<div class="col-4">Email</div>
+			<div class="col-8">{{ user.email }}</div>
+		</div>
+		<div class="row mt-2">
+			<div class="col-4">Registration</div>
+			<div class="col-8">{{ user.registration_at.strftime('%Y-%m-%d %H:%m') }}</div>
+		</div>
+	</div>
+</div>
+<table class="table table-bordered dataTable" cellspacing="0">
+	<thead>
+		<tr>
+			{% if current_user.id == user.id %}
+			<th></th>
+			{% endif %}
+			<th>ID</th>
+			{% if current_user.id == user.id %}
+			<th>Key</th>
+			{% else %}
+			<th>Active</th>
+			{% endif %}
+			<th>Uses</th>
+			<th>Created</th>
+			<th>Expire</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for key in user.keys %}
+		<tr>
+			{% if current_user.id == user.id %}
+			<td>
+				<a href="{{ url_for('user_toogle_key', user_id=user.id, key_id=key.id) }}" class="btn btn-{{ 'secondary' if key.active else 'primary' }} btn-sm">{{ "Deactivate" if key.active else "Activate" }}</a>
+			</td>
+			{% endif %}
+			<td>{{ key.id}}</td>
+			{% if current_user.id == user.id %}
+			<td>{{ key.key }}</td>
+			{% else %}
+			<td>{{ key.active }}</td>
+			{% endif %}
+			<td>{{ key.uses }}</td>
+			<td>{{ key.created_at.strftime('%Y-%m-%d %H:%m') }}</td>
+			<td>{{ key.expire_at }}</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+{% endblock %}
+{% block javascript %}
+<script type='text/javascript' src="{{ url_for('static', filename='vendor/datatables/jquery.dataTables.js') }}"></script>
+<script type='text/javascript' src="{{ url_for('static', filename='vendor/datatables/dataTables.bootstrap4.js') }}"></script>
+<script type='text/javascript' src="{{ url_for('static', filename='js/site/sb-admin-datatables.min.js') }}"></script>
+{% endblock %}

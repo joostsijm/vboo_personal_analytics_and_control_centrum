@@ -1,0 +1,35 @@
+{% extends "layouts/main.html" %}
+{% block title %}Users{% endblock %}
+{% block head %}
+<link href="{{ url_for('static', filename='vendor/datatables/dataTables.bootstrap4.css') }}" rel="stylesheet">
+{% endblock %}
+{% block content %}
+<table class="table table-bordered dataTable" cellspacing="0">
+	<thead>
+		<tr>
+			<th>ID</th>
+			<th>Name</th>
+			<th>Email</th>
+			<th>Keys</th>
+			<th>Registration</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for user in users %}
+		<tr>
+
+			<td><a href="{{ url_for('user_overview', id=user.id) }}">{{ user.id }}</a></td>
+			<td>{{ user.name }}</td>
+			<td>{{ user.email }}</td>
+			<td>{{ user.key_count }}</td>
+			<td>{{ user.registration_at }}</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+{% endblock %}
+{% block javascript %}
+<script type='text/javascript' src="{{ url_for('static', filename='vendor/datatables/jquery.dataTables.js') }}"></script>
+<script type='text/javascript' src="{{ url_for('static', filename='vendor/datatables/dataTables.bootstrap4.js') }}"></script>
+<script type='text/javascript' src="{{ url_for('static', filename='js/site/sb-admin-datatables.min.js') }}"></script>
+{% endblock %}
