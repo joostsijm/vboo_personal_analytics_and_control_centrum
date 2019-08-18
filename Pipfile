@@ -1,9 +1,7 @@
 [[source]]
-
 url = "https://pypi.python.org/simple"
 verify_ssl = true
 name = "pypi"
-
 
 [packages]
 requests = "*"
@@ -15,7 +13,7 @@ Flask-Menu = "*"
 Flask-Login = "*"
 Flask-Migrate = "*"
 APScheduler = "*"
-
+python-dotenv = "*"
+flask-argon2 = "*"
 
 [dev-packages]
-

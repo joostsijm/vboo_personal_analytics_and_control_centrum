@@ -12,16 +12,10 @@ from flask_breadcrumbs import Breadcrumbs, register_breadcrumb
 from flask_menu import Menu, register_menu
 from flask_login import login_required, login_user, logout_user
 from app import app, login_manager, db
-from app.models import User, Key, Function, Log
+from app.models import User, Request, Log, Key
 
 Menu(app=app)
 Breadcrumbs(app=app)
-
-
-@login_manager.user_loader
-def load_user(id):
-    """Return user"""
-    return User.query.get(id)
 
 
 @register_breadcrumb(app, '.login', 'Login')
@@ -81,8 +75,9 @@ def logout():
 @register_breadcrumb(app, '.', 'Home')
 def index():
     """Show homepage"""
-    users = User.query.count()
-    return render_template('site/index.html', users=users)
+    # users = User.query.count()
+    return render_template('site/index.html')
+    # return render_template('site/index.html', users=users)
 
 
 @app.route('/users')
