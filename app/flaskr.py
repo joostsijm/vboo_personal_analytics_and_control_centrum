@@ -5,13 +5,12 @@ Simple flask thing
 
 import random
 import string
-from datetime import datetime
 from flask import render_template, request, redirect, \
     flash, url_for, abort, json
 from flask_breadcrumbs import Breadcrumbs, register_breadcrumb
 from flask_menu import Menu, register_menu
 from flask_login import login_required, login_user, logout_user
-from app import app, login_manager, db
+from app import app, login_manager, db, rrclient
 from app.models import User, Request, Log, Key
 
 Menu(app=app)
@@ -94,7 +93,7 @@ def user_overview_dlc(*args, **kwargs):
     """Generate dynamic_list for user"""
     id = request.view_args['id']
     user = User.query.get(id)
-    return [{'text': user.email, 'url': user.url}]
+    return [{'text': user.email, 'url': user.name}]
 
 
 @app.route('/user/<int:id>')
@@ -157,8 +156,8 @@ def api_authenticated():
     return json.dumps(False)
 
 
-@app.route('/api/request', methods=["GET"])
-def api_log():
+@app.route('/api/request/<path:url_path>', methods=["GET"])
+def api_get(url_path):
     """Check key"""
     if 'Authorization' not in request.headers:
         return abort(403)
@@ -169,8 +168,38 @@ def api_log():
         return abort(403)
 
     log = Log()
-
     db.session.add(log)
     db.session.commit()
 
-    return json.dumps(True)
+    result = rrclient.get(url_path)
+
+    log.succes = True
+    db.session.commit()
+    return result
+
+
+@app.route('/api/request/<path:url_path>', methods=["POST"])
+def api_post(url_path):
+    """Check key"""
+    if 'Authorization' not in request.headers:
+        return abort(403)
+
+    authorization = request.headers['authorization']
+    key = Key.query.filter(Key.key == authorization).first()
+    if not key or not key.active:
+        return abort(403)
+
+    log = Log()
+    db.session.add(log)
+    db.session.commit()
+
+    if request.json:
+        data = request.json
+    else:
+        data = {}
+
+    result = rrclient.post(url_path, data=data)
+
+    log.succes = True
+    db.session.commit()
+    return result

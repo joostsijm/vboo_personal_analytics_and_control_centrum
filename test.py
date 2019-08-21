@@ -5,9 +5,9 @@ Test application for api request. Change authorization if necessary
 
 import requests
 
-URL = 'http://localhost:5000/'
+URL = 'http://localhost:5000/api/request/listed/country'
 HEADERS = {
-    'Authorization': 'cGwJNNbIhrKiMKjA4DuVhzL2YH8DxPDV37N5SAb6UbhYtFhYzgwhtmVS4iVloyEu'
+    'Authorization': 'ZDoJMSKBKz0TNhfOcCRiraCxb0UHqnbVPIQkP6yJkTdSkvysxnyQgu0U5oQ0NBa9'
 }
 
 DATA = {

@@ -2,7 +2,7 @@
 
 from datetime import datetime
 from sqlalchemy.ext.hybrid import hybrid_property, hybrid_method
-from app import db, login_manager
+from app import db, login_manager, argon2
 from flask_login import UserMixin
 
 
@@ -28,8 +28,10 @@ class User(db.Model, UserMixin):
         """Hash password"""
         self._password = argon2.generate_password_hash(password)
 
-    def __init__(self, id=None):
-        self.id = id
+    def check_password(self, password):
+        """Check if password is correct"""
+        return argon2.check_password_hash(self.password, password)
+
 
 class Key(db.Model):
     """Model for Key"""
@@ -47,7 +49,7 @@ class Key(db.Model):
     )
     user = db.relationship(
         "User",
-        back_populates=db.backref("users", lazy="dynamic")
+        backref=db.backref("users", lazy="dynamic")
     )
 
 class Request(db.Model):
@@ -68,7 +70,7 @@ class Log(db.Model):
     )
     key = db.relationship(
         "Key",
-        back_populates=db.backref("logs", lazy="dynamic")
+        backref=db.backref("logs", lazy="dynamic")
     )
     request_id = db.Column(
         db.Integer,
@@ -76,5 +78,5 @@ class Log(db.Model):
     )
     request = db.relationship(
         "Request",
-        back_populates=db.backref("logs", lazy="dynamic")
+        backref=db.backref("logs", lazy="dynamic")
     )

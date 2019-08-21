@@ -11,6 +11,7 @@ from flask_migrate import Migrate
 from flask_argon2 import Argon2
 from dotenv import load_dotenv
 from sqlalchemy import MetaData
+from rival_regions_wrapper.rival_regions_wrapper import Client
 
 load_dotenv()
 
@@ -21,7 +22,7 @@ class Config():
     SQLALCHEMY_DATABASE_URI = os.environ["DATABASE_URI"]
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SEND_FILE_MAX_AGE_DEFAULT = 1296000
-  
+
 app = Flask(__name__)
 app.config.from_object(Config())
 app.jinja_env.lstrip_blocks = True
@@ -34,8 +35,8 @@ convention = {
     "ck": "ck_%(table_name)s_%(constraint_name)s",
     "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
     "pk": "pk_%(table_name)s"
-} 
- 
+}
+
 metadata = MetaData(naming_convention=convention)
 db = SQLAlchemy(app, metadata=metadata)
 migrate = Migrate(app, db)
@@ -46,3 +47,12 @@ login_manager.init_app(app)
 login_manager.login_view = "login"
 login_manager.login_message_category = "warning"
 argon2 = Argon2(app)
+
+# Rival Region wrapper
+credentials = {
+    "login_method": os.environ["LOGIN_METHOD"],
+    "username": os.environ["USERNAME"],
+    "password": os.environ["PASSWORD"]
+}
+rrclient = Client(show_window=os.environ["SHOW_WINDOW"])
+rrclient.login(credentials)
