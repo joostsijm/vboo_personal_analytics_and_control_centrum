@@ -54,5 +54,5 @@ credentials = {
     "username": os.environ["USERNAME"],
     "password": os.environ["PASSWORD"]
 }
-rrclient = Client(show_window=os.environ["SHOW_WINDOW"])
+rrclient = Client(show_window=os.environ["SHOW_WINDOW"] == 'True')
 rrclient.login(credentials)
