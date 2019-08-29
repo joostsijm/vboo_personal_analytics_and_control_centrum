@@ -10,7 +10,7 @@ from flask import render_template, request, redirect, \
 from flask_breadcrumbs import Breadcrumbs, register_breadcrumb
 from flask_menu import Menu, register_menu
 from flask_login import login_required, login_user, logout_user
-from app import app, login_manager, db, rrclient
+from app import app, login_manager, db, rrclient, alt_rrclient
 from app.models import User, Request, Log, Key
 
 Menu(app=app)
@@ -171,7 +171,11 @@ def api_get(url_path):
     db.session.add(log)
     db.session.commit()
 
-    result = rrclient.get(url_path)
+    alt = request.args.get('alt')
+    if alt:
+        result = alt_rrclient.get(url_path)
+    else:
+        result = rrclient.get(url_path)
 
     log.succes = True
     db.session.commit()
@@ -198,7 +202,13 @@ def api_post(url_path):
     else:
         data = {}
 
-    result = rrclient.post(url_path, data=data)
+    alt = request.args.get('alt')
+    if alt:
+        print('alt')
+        result = alt_rrclient.post(url_path, data=data)
+    else:
+        print('no alt')
+        result = rrclient.post(url_path, data=data)
 
     log.succes = True
     db.session.commit()
