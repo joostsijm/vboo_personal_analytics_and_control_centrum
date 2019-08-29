@@ -204,10 +204,8 @@ def api_post(url_path):
 
     alt = request.args.get('alt')
     if alt:
-        print('alt')
         result = alt_rrclient.post(url_path, data=data)
     else:
-        print('no alt')
         result = rrclient.post(url_path, data=data)
 
     log.succes = True
