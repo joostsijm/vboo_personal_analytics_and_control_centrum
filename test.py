@@ -14,4 +14,14 @@ DATA = {
     'test': 'true',
 }
 
-print(requests.get(URL, headers=HEADERS, data=DATA).text)
+PARAMS = {
+    'alt': True
+}
+
+RESULT = requests.post(
+    URL,
+    headers=HEADERS,
+    data=DATA,
+    params=PARAMS
+)
+print(RESULT.text)
