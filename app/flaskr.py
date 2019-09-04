@@ -25,22 +25,17 @@ def login():
         email = request.form['email']
         password = request.form['password']
         user = User.query.filter(User.email == email).first()
-        if user is not None:
-            if user.password == password:
-                login_user(user)
-                flash('You were successfully logged in', 'success')
-                if request.args.get("next") is not None:
-                    return redirect(request.args.get("next"))
-                else:
-                    return redirect(url_for('index'))
-            else:
-                flash('Incorrect password', 'danger')
-        else:
-            flash('User not found', 'danger')
-
-        return redirect(url_for('login'))
-    else:
-        return render_template('site/login.html')
+        if user:
+            if user.check_password(password):
+                login_user(user, remember=True)
+                flash('Successfully loggend in.', 'success')
+                if request.args.get("next"):
+                    return redirect(request.args.get('next'))
+                return redirect(url_for('index'))
+            flash('Password Incorrect.', 'warning')
+            return render_template('site/login.html', login_email=email)
+        flash('Email not found.', 'warning')
+    return render_template('site/login.html')
 
 
 @app.route("/register", methods=["POST"])
