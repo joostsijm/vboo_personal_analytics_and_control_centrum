@@ -12,7 +12,7 @@ from flask import render_template, request, redirect, \
 from flask_breadcrumbs import Breadcrumbs, register_breadcrumb
 from flask_menu import Menu, register_menu
 from flask_login import login_required, login_user, logout_user
-from app import app, login_manager, db, rrclient, alt_rrclient
+from app import app, db, rrclient, alt_rrclient
 from app.models import User, Log, Key
 
 Menu(app=app)
@@ -85,9 +85,7 @@ def register():
     flash('Successfully registered account "%s".' % (user.name), 'success')
     if request.args.get("next") is not None:
         return redirect(request.args.get("next"))
-    else:
-        return redirect(url_for('index'))
-
+    return redirect(url_for('index'))
 
 
 @app.route("/logout")
