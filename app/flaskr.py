@@ -5,13 +5,15 @@ Simple flask thing
 
 import random
 import string
+from datetime import datetime
+
 from flask import render_template, request, redirect, \
     flash, url_for, abort, json
 from flask_breadcrumbs import Breadcrumbs, register_breadcrumb
 from flask_menu import Menu, register_menu
 from flask_login import login_required, login_user, logout_user
 from app import app, login_manager, db, rrclient, alt_rrclient
-from app.models import User, Request, Log, Key
+from app.models import User, Log, Key
 
 Menu(app=app)
 Breadcrumbs(app=app)
@@ -41,18 +43,51 @@ def login():
 @app.route("/register", methods=["POST"])
 def register():
     """Register a new user"""
+    name = request.form['name'] if 'name' in request.form else None
+    email = request.form['email'] if 'email' in request.form else None
+    password = request.form['password'] if 'email' in request.form else None
+
+    if name is None:
+        flash('Fill in the name.', 'warning')
+        return render_template('login.j2')
+
+    if email is None:
+        flash('Fill in the email.', 'warning')
+        return render_template(
+            'login.j2',
+            name=name
+        )
+
+    if password is None:
+        flash('Fill in the password.', 'warning')
+        return render_template(
+            'login.j2',
+            name=name,
+            email=email
+        )
+
+    user = User.query.filter(User.email == email).first()
+    if user is not None:
+        flash('Email already taken.', 'warning')
+        return render_template(
+            'login.j2',
+            name=name,
+        )
+
     user = User()
-    user.name = request.form['name']
-    user.email = request.form['email']
-    user.password = request.form['password']
+    user.name = name
+    user.email = email
+    user.password = password
     db.session.add(user)
     db.session.commit()
     login_user(user)
-    flash('Succesfully registered account', 'success')
+
+    flash('Successfully registered account "%s".' % (user.name), 'success')
     if request.args.get("next") is not None:
         return redirect(request.args.get("next"))
     else:
         return redirect(url_for('index'))
+
 
 
 @app.route("/logout")
@@ -163,6 +198,10 @@ def api_get(url_path):
         return abort(403)
 
     log = Log()
+    log.date_time = datetime.now()
+    log.key_id = key.id
+    log.request_type = 'GET'
+    log.request_url = url_path
     db.session.add(log)
     db.session.commit()
 
@@ -189,6 +228,10 @@ def api_post(url_path):
         return abort(403)
 
     log = Log()
+    log.date_time = datetime.now()
+    log.key_id = key.id
+    log.request_type = 'POST'
+    log.request_url = url_path
     db.session.add(log)
     db.session.commit()
 

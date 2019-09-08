@@ -49,19 +49,16 @@ class Key(db.Model):
     )
     user = db.relationship(
         "User",
-        backref=db.backref("users", lazy="dynamic")
+        backref=db.backref("keys", lazy="dynamic")
     )
-
-class Request(db.Model):
-    """Model for function"""
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
 
 
 class Log(db.Model):
     """Model for Log"""
     id = db.Column(db.Integer, primary_key=True)
     succes = db.Column(db.Boolean, default=False)
+    request_type = db.Column(db.String)
+    request_url = db.Column(db.String)
     date_time = db.Column(db.DateTime)
 
     key_id = db.Column(
@@ -70,13 +67,5 @@ class Log(db.Model):
     )
     key = db.relationship(
         "Key",
-        backref=db.backref("logs", lazy="dynamic")
-    )
-    request_id = db.Column(
-        db.Integer,
-        db.ForeignKey('request.id')
-    )
-    request = db.relationship(
-        "Request",
         backref=db.backref("logs", lazy="dynamic")
     )
