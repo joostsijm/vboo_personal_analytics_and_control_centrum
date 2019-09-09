@@ -141,8 +141,8 @@ def user_generate_key(id):
     """Generate new key for user"""
     user = User.query.get(id)
     key = Key()
-    key.key = ''.join(random.choices(
-        string.ascii_letters + string.digits, k=64
+    key.key = ''.join(random.sample(
+        string.ascii_letters + string.digits, 32
     ))
     key.user_id = user.id
     db.session.add(key)
