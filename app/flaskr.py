@@ -214,6 +214,41 @@ def api_get(url_path):
     return result
 
 
+@app.route('/api/request/send_chat/<string:language>', methods=["POST"])
+def api_send_chat(language):
+    """Check key"""
+    if 'Authorization' not in request.headers:
+        return abort(403)
+
+    authorization = request.headers['authorization']
+    key = Key.query.filter(Key.key == authorization).first()
+    if not key or not key.active:
+        return abort(403)
+
+    if 'message' not in request.json:
+        return abort(400)
+
+    message = request.json['message']
+
+    log = Log()
+    log.date_time = datetime.now()
+    log.key_id = key.id
+    log.request_type = 'CHAT'
+    log.request_url = language
+    db.session.add(log)
+    db.session.commit()
+
+    alt = request.args.get('alt')
+    if alt:
+        alt_rrclient.send_chat(language, message)
+    else:
+        rrclient.send_chat(language, message)
+
+    log.succes = True
+    db.session.commit()
+    return json.dumps(True)
+
+
 @app.route('/api/request/<path:url_path>', methods=["POST"])
 def api_post(url_path):
     """Check key"""
@@ -247,38 +282,3 @@ def api_post(url_path):
     log.succes = True
     db.session.commit()
     return result
-
-
-@app.route('/api/send_chat/<string:language>', methods=["POST"])
-def api_send_chat(language):
-    """Check key"""
-    if 'Authorization' not in request.headers:
-        return abort(403)
-
-    authorization = request.headers['authorization']
-    key = Key.query.filter(Key.key == authorization).first()
-    if not key or not key.active:
-        return abort(403)
-
-    if 'message' not in request.json:
-        return abort(400)
-
-    message = request.json['message']
-
-    log = Log()
-    log.date_time = datetime.now()
-    log.key_id = key.id
-    log.request_type = 'CHAT'
-    log.request_url = language
-    db.session.add(log)
-    db.session.commit()
-
-    alt = request.args.get('alt')
-    if alt:
-        alt_rrclient.send_chat(language, message)
-    else:
-        rrclient.send_chat(language, message)
-
-    log.succes = True
-    db.session.commit()
-    return json.dumps(True)
