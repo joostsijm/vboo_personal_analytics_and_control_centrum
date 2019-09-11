@@ -225,10 +225,9 @@ def api_send_chat(language):
     if not key or not key.active:
         return abort(403)
 
-    if 'message' not in request.json:
+    if 'message' not in request.form:
         return abort(400)
-
-    message = request.json['message']
+    message = request.form['message']
 
     log = Log()
     log.date_time = datetime.now()
