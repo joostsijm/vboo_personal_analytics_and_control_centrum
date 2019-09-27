@@ -267,9 +267,8 @@ def api_post(url_path):
     db.session.add(log)
     db.session.commit()
 
-    if request.json:
-        data = request.json
-    else:
+    data = request.get_json()
+    if not data:
         data = {}
 
     alt = request.args.get('alt')
