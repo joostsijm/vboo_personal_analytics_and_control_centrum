@@ -56,7 +56,7 @@ rrclient.set_credentials({
     "password": os.environ["PASSWORD"]
 })
 
-alt_rrclient = Client(show_window=os.environ["SHOW_WINDOW"] == 'True')
+alt_rrclient = Client(show_window=os.environ["ALT_SHOW_WINDOW"] == 'True')
 alt_rrclient.set_credentials({
     "login_method": os.environ["ALT_LOGIN_METHOD"],
     "username": os.environ["ALT_USERNAME"],
