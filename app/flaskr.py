@@ -247,6 +247,38 @@ def api_send_chat(language):
     db.session.commit()
     return json.dumps(True)
 
+@app.route('/api/request/send_personal_message/<int:user_id>', methods=["POST"])
+def api_send_personal_message(user_id):
+    """Send personal message to player"""
+    if 'Authorization' not in request.headers:
+        return abort(403)
+
+    authorization = request.headers['authorization']
+    key = Key.query.filter(Key.key == authorization).first()
+    if not key or not key.active:
+        return abort(403)
+
+    if 'message' not in request.form:
+        return abort(400)
+    message = request.form['message']
+
+    log = Log()
+    log.date_time = datetime.now()
+    log.key_id = key.id
+    log.request_type = 'PM'
+    log.request_url = user_id
+    db.session.add(log)
+    db.session.commit()
+
+    alt = request.args.get('alt')
+    if alt:
+        alt_rrclient.send_personal_message(user_id, message)
+    else:
+        rrclient.send_personal_message(user_id, message)
+
+    log.succes = True
+    db.session.commit()
+    return json.dumps(True)
 
 @app.route('/api/request/<path:url_path>', methods=["POST"])
 def api_post(url_path):
