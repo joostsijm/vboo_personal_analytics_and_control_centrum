@@ -204,7 +204,7 @@ def api_get(url_path):
     db.session.commit()
 
     alt = request.args.get('alt')
-    if alt:
+    if alt and alt.lower() == 'true':
         result = alt_rrclient.get(url_path)
     else:
         result = rrclient.get(url_path)
@@ -238,7 +238,7 @@ def api_send_chat(language):
     db.session.commit()
 
     alt = request.args.get('alt')
-    if alt:
+    if alt and alt.lower() == 'true':
         alt_rrclient.send_chat(language, message)
     else:
         rrclient.send_chat(language, message)
@@ -271,7 +271,7 @@ def api_send_personal_message(user_id):
     db.session.commit()
 
     alt = request.args.get('alt')
-    if alt:
+    if alt and alt.lower() == 'true':
         alt_rrclient.send_personal_message(user_id, message)
     else:
         rrclient.send_personal_message(user_id, message)
@@ -304,7 +304,7 @@ def api_post(url_path):
         data = {}
 
     alt = request.args.get('alt')
-    if alt:
+    if alt and alt.lower() == 'true':
         result = alt_rrclient.post(url_path, data=data)
     else:
         result = rrclient.post(url_path, data=data)
