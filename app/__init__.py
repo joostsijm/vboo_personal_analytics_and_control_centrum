@@ -49,14 +49,14 @@ login_manager.login_message_category = "warning"
 argon2 = Argon2(app)
 
 # Rival Region wrapper
-rrclient = Client(show_window=os.environ["SHOW_WINDOW"] == 'True')
+rrclient = Client(show_window=os.environ["SHOW_WINDOW"].lower() == 'true')
 rrclient.set_credentials({
     "login_method": os.environ["LOGIN_METHOD"],
     "username": os.environ["USERNAME"],
     "password": os.environ["PASSWORD"]
 })
 
-alt_rrclient = Client(show_window=os.environ["ALT_SHOW_WINDOW"] == 'True')
+alt_rrclient = Client(show_window=os.environ["ALT_SHOW_WINDOW"].lower() == 'true')
 alt_rrclient.set_credentials({
     "login_method": os.environ["ALT_LOGIN_METHOD"],
     "username": os.environ["ALT_USERNAME"],
