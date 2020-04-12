@@ -313,6 +313,42 @@ def api_send_conference_message(conference_id):
     db.session.commit()
     return json.dumps(True)
 
+@app.route('/api/request/send_conference_notification/<int:conference_id>', methods=["POST"])
+def api_send_conference_notification(conference_id):
+    """Check key"""
+    if 'Authorization' not in request.headers:
+        return abort(403)
+
+    authorization = request.headers['authorization']
+    key = Key.query.filter(Key.key == authorization).first()
+    if not key or not key.active:
+        return abort(403)
+
+    if 'message' not in request.form:
+        return abort(400)
+    message = request.form['message']
+    if 'sound' in request.form:
+        sound = request.form['sound'].lower() == 'true'
+    else:
+        sound = False
+
+    log = Log()
+    log.date_time = datetime.now()
+    log.key_id = key.id
+    log.request_type = 'CM'
+    log.request_url = conference_id
+    db.session.add(log)
+    db.session.commit()
+
+    alt = request.args.get('alt')
+    if alt and alt.lower() == 'true':
+        alt_rrclient.send_conference_notification(conference_id, message, sound)
+    else:
+        rrclient.send_conference_notification(conference_id, message, sound)
+
+    log.succes = True
+    db.session.commit()
+    return json.dumps(True)
 
 @app.route('/api/request/<path:url_path>', methods=["POST"])
 def api_post(url_path):
