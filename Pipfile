@@ -15,5 +15,6 @@ Flask-Migrate = "*"
 APScheduler = "*"
 python-dotenv = "*"
 flask-argon2 = "*"
+rival-regions-wrapper = "*"
 
 [dev-packages]
