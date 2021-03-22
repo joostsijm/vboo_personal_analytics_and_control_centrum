@@ -11,7 +11,7 @@ from flask_migrate import Migrate
 from flask_argon2 import Argon2
 from dotenv import load_dotenv
 from sqlalchemy import MetaData
-from rival_regions_wrapper.rival_regions_wrapper import Client
+from rival_regions_wrapper import LocalAuthentication
 
 load_dotenv()
 
@@ -49,16 +49,10 @@ login_manager.login_message_category = "warning"
 argon2 = Argon2(app)
 
 # Rival Region wrapper
-rrclient = Client(show_window=os.environ["SHOW_WINDOW"].lower() == 'true')
-rrclient.set_credentials({
-    "login_method": os.environ["LOGIN_METHOD"],
-    "username": os.environ["USERNAME"],
-    "password": os.environ["PASSWORD"]
-})
+rrclient = LocalAuthentication(
+    os.environ["USERNAME"], os.environ["PASSWORD"], os.environ["LOGIN_METHOD"]
+)
 
-alt_rrclient = Client(show_window=os.environ["ALT_SHOW_WINDOW"].lower() == 'true')
-alt_rrclient.set_credentials({
-    "login_method": os.environ["ALT_LOGIN_METHOD"],
-    "username": os.environ["ALT_USERNAME"],
-    "password": os.environ["ALT_PASSWORD"]
+alt_rrclient = Client(
+    os.environ["ALT_USERNAME"], os.environ["ALT_PASSWORD"], os.environ["ALT_LOGIN_METHOD"]
 })
