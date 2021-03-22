@@ -55,4 +55,4 @@ rrclient = LocalAuthentication(
 
 alt_rrclient = Client(
     os.environ["ALT_USERNAME"], os.environ["ALT_PASSWORD"], os.environ["ALT_LOGIN_METHOD"]
-})
+)
