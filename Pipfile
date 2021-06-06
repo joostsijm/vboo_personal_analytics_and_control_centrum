@@ -16,5 +16,6 @@ APScheduler = "*"
 python-dotenv = "*"
 flask-argon2 = "*"
 rival-regions-wrapper = "*"
+sqlalchemy = "<1.4.0"
 
 [dev-packages]
