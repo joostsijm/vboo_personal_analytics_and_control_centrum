@@ -49,9 +49,12 @@ login_manager.login_message_category = "warning"
 argon2 = Argon2(app)
 
 # Rival Region wrapper
-rrclient = LocalAuthentication(
-    os.environ["USERNAME"], os.environ["PASSWORD"], os.environ["LOGIN_METHOD"]
-)
+rrclient = LocalAuthentication(False, os.environ["CAPTCHA_KEY"])
+rrclient.set_credential(
+        os.environ["USERNAME"],
+        os.environ["PASSWORD"],
+        os.environ["LOGIN_METHOD"]
+    )
 
 alt_rrclient = None
 # alt_rrclient = LocalAuthentication(
