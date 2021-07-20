@@ -11,7 +11,7 @@ from flask_migrate import Migrate
 from flask_argon2 import Argon2
 from dotenv import load_dotenv
 from sqlalchemy import MetaData
-from rival_regions_wrapper import LocalAuthentication
+from rival_regions_wrapper.middleware import LocalAuthentication
 
 load_dotenv()
 
