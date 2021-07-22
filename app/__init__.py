@@ -50,7 +50,7 @@ argon2 = Argon2(app)
 
 # Rival Region wrapper
 rrclient = LocalAuthentication(False, os.environ["CAPTCHA_KEY"])
-rrclient.set_credential(
+rrclient.set_credentials(
         os.environ["USERNAME"],
         os.environ["PASSWORD"],
         os.environ["LOGIN_METHOD"]
